@@ -5,5 +5,5 @@ export interface Sound {
 	channel: string;
 	name: string;
 	url: string[];
-	state: SoundState;
+	type?: 'faf';
 }

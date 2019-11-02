@@ -1,14 +1,20 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, {
+	useContext,
+	useEffect,
+	useRef,
+	useImperativeHandle,
+	forwardRef
+} from 'react';
 import { SoundContext } from './SoundContext';
 import { SoundClip } from './soundboard';
 
 interface Props {
 	url: string[];
 	state: 'idle' | 'playing';
-	onEnd: () => void
+	onEnd?: () => void;
 }
 
-const Clip: React.FC<Props> = ({ url, state, onEnd }) => {
+const Clip: React.FC<Props> = ({ url, state, onEnd }, ref) => {
 	const board = useContext(SoundContext);
 	const piece = useRef<SoundClip | null>(null);
 
@@ -41,7 +47,13 @@ const Clip: React.FC<Props> = ({ url, state, onEnd }) => {
 		}
 	}, [state]);
 
+	useImperativeHandle(ref, () => ({
+		play() {
+			piece.current && piece.current.play();
+		}
+	}));
+
 	return null;
 };
 
-export default Clip;
+export default forwardRef(Clip);

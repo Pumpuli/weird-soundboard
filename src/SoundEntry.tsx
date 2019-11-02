@@ -1,18 +1,20 @@
 import React from 'react';
-import { Sound } from './interfaces';
+import { Sound, SoundState } from './interfaces';
 import SoundButton from './SoundButton';
 import Clip from './Clip';
 
-const SoundEntry: React.FC<{ sound: Sound; dispatch: Function }> = ({
-	sound,
-	dispatch
-}) => (
+const SoundEntry: React.FC<{
+	sound: Sound;
+	state: SoundState;
+	dispatch: Function;
+}> = ({ sound, state, dispatch }) => (
 	<>
 		<SoundButton
 			sound={sound}
+			state={state}
 			onClick={() =>
 				dispatch(
-					sound.state === 'idle'
+					state === 'idle'
 						? { type: 'PLAY', id: sound.id }
 						: { type: 'STOP', id: sound.id }
 				)
@@ -20,7 +22,7 @@ const SoundEntry: React.FC<{ sound: Sound; dispatch: Function }> = ({
 		/>
 		<Clip
 			url={sound.url}
-			state={sound.state}
+			state={state}
 			onEnd={() => dispatch({ type: 'STOP', id: sound.id })}
 		/>
 	</>
