@@ -1,9 +1,9 @@
 import React, { useReducer, useRef } from 'react';
 import produce from 'immer';
 import { Sound, SoundState } from './interfaces';
+import useEventListener from './useEventListener';
 import SoundButton from './SoundButton';
 import Clip from './Clip';
-import useEventListener from './useEventListener';
 
 interface State {
 	soundStates: { [id: string]: SoundState };

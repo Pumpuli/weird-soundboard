@@ -1,8 +1,8 @@
 import React, { useReducer } from 'react';
 import produce from 'immer';
-import './App.css';
 import { Sound } from './interfaces';
 import Board from './Board';
+import './App.css';
 
 interface State {
 	sounds: {
@@ -48,13 +48,21 @@ const App: React.FC = () => {
 				channel: 'ch1',
 				name: 'Siren',
 				url: [`${process.env.PUBLIC_URL}/sounds/police.ogg`]
+			},
+			s4: {
+				id: 's4',
+				channel: 'ch1',
+				name: 'Quack',
+				url: [`${process.env.PUBLIC_URL}/sounds/quack.mp3`],
+				type: 'faf'
 			}
 		},
-		soundIds: ['s1', 's2', 's3'],
+		soundIds: ['s1', 's2', 's3', 's4'],
 		keys: {
 			q: 's1',
 			w: 's2',
-			e: 's3'
+			e: 's3',
+			r: 's4'
 		}
 	});
 
