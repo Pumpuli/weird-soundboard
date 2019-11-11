@@ -7,3 +7,12 @@ export interface Sound {
 	url: string[];
 	type?: 'faf';
 }
+
+export type VideoState = 'idle' | 'playing';
+
+export interface Video {
+	id: string;
+	videoId: string;
+	name: string;
+	start?: number;
+}

@@ -1,15 +1,23 @@
 import React, { useReducer, useRef } from 'react';
 import produce from 'immer';
-import { Sound, SoundState } from './interfaces';
+import { Sound, SoundState, Video, VideoState } from './interfaces';
 import useEventListener from './useEventListener';
 import SoundButton from './SoundButton';
 import Clip from './Clip';
+import YouTube from 'react-youtube';
+import VideoClip from './VideoClip';
+import ClipControl from './ClipControl';
 
 interface State {
 	soundStates: { [id: string]: SoundState };
+	videoStates: { [id: string]: VideoState };
 }
 
-type Action = { type: 'PLAY'; id: string } | { type: 'STOP'; id: string };
+type Action =
+	| { type: 'PLAY'; id: string }
+	| { type: 'STOP'; id: string }
+	| { type: 'PLAYVIDEO'; id: string }
+	| { type: 'STOPVIDEO'; id: string };
 
 const reducer: (state: State, action: Action) => State = produce(
 	(state: State, action: Action) => {
@@ -21,6 +29,14 @@ const reducer: (state: State, action: Action) => State = produce(
 			case 'STOP':
 				state.soundStates[action.id] = 'idle';
 				break;
+
+			case 'PLAYVIDEO':
+				state.videoStates[action.id] = 'playing';
+				break;
+
+			case 'STOPVIDEO':
+				state.videoStates[action.id] = 'idle';
+				break;
 		}
 	}
 );
@@ -29,10 +45,16 @@ const Board: React.FC<{
 	sounds: { [id: string]: Sound };
 	soundIds: string[];
 	keys: { [key: string]: string };
-}> = ({ sounds, soundIds, keys }) => {
-	const [{ soundStates }, dispatch] = useReducer(reducer, { soundStates: {} });
+	videos?: { [id: string]: Video };
+	videoIds?: string[];
+}> = ({ sounds, soundIds, keys, videos = {}, videoIds = [] }) => {
+	const [{ soundStates, videoStates }, dispatch] = useReducer(reducer, {
+		soundStates: {},
+		videoStates: {}
+	});
 
 	const refs = useRef(new Map<string, any>()).current;
+	const players = useRef(new Map<string, any>()).current;
 
 	function activate(id: string) {
 		const sound = sounds[id];
@@ -90,6 +112,42 @@ const Board: React.FC<{
 							onEnd={() => dispatch({ type: 'STOP', id })}
 						/>
 					</React.Fragment>
+				);
+			})}
+			{videoIds.map(id => {
+				const video = videos[id];
+				const state = videoStates[id] || 'idle';
+
+				return (
+					<div key={id}>
+						<button
+							className="Sound"
+							type="button"
+							onClick={() =>
+								dispatch(
+									state === 'idle'
+										? { type: 'PLAYVIDEO', id }
+										: { type: 'STOPVIDEO', id }
+								)
+							}
+						>
+							{video.name}
+							<ClipControl state={state} />
+						</button>
+						<button
+							type="button"
+							onClick={() => players.get(id) && players.get(id).reset()}
+						>
+							reset
+						</button>
+						<VideoClip
+							ref={inst =>
+								inst === null ? players.delete(id) : players.set(id, inst)
+							}
+							video={video}
+							state={state}
+						/>
+					</div>
 				);
 			})}
 		</main>
