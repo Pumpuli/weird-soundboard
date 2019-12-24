@@ -1,18 +1,21 @@
-export type SoundState = 'idle' | 'playing';
+export type ClipState = 'idle' | 'playing';
 
-export interface Sound {
+export interface ClipBase {
 	id: string;
 	channel: string;
 	name: string;
-	url: string[];
-	type?: 'faf';
+	replayType?: 'faf';
 }
 
-export type VideoState = 'idle' | 'playing';
+export interface SoundfileClip extends ClipBase {
+	type: 'soundfile';
+	url: string[];
+}
 
-export interface Video {
-	id: string;
+export interface YoutubeClip extends ClipBase {
+	type: 'youtube';
 	videoId: string;
-	name: string;
 	start?: number;
 }
+
+export type Clip = SoundfileClip | YoutubeClip;

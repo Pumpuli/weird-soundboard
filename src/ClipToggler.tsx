@@ -1,20 +1,16 @@
 import React from 'react';
-import { Sound, Video } from './interfaces';
+import { Clip } from './interfaces';
 
 interface Props {
-	sounds: { [id: string]: Sound };
-	soundIds: string[];
-	videos: { [id: string]: Video };
-	videoIds: string[];
+	clips: { [id: string]: Clip };
+	clipIds: string[];
 	dispatch: Function;
 	onRequestClose?: () => void;
 }
 
 const ClipToggler: React.FC<Props> = ({
-	sounds,
-	soundIds,
-	videos,
-	videoIds,
+	clips,
+	clipIds,
 	dispatch,
 	onRequestClose
 }) => {
@@ -30,8 +26,8 @@ const ClipToggler: React.FC<Props> = ({
 			<button type="button" onClick={() => onRequestClose && onRequestClose()}>
 				close
 			</button>
-			{Object.keys(sounds).map(id => {
-				const sound = sounds[id];
+			{Object.keys(clips).map(id => {
+				const sound = clips[id];
 
 				return (
 					<div
@@ -47,41 +43,12 @@ const ClipToggler: React.FC<Props> = ({
 						<input
 							id={`S:${id}`}
 							type="checkbox"
-							defaultChecked={soundIds.includes(id)}
+							defaultChecked={clipIds.includes(id)}
 							onChange={event =>
 								dispatch(
 									event.target.checked
-										? { type: 'ENABLE_SOUND', id }
-										: { type: 'DISABLE_SOUND', id }
-								)
-							}
-						/>
-					</div>
-				);
-			})}
-			{Object.keys(videos).map(id => {
-				const video = videos[id];
-
-				return (
-					<div
-						key={id}
-						style={{
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							padding: '1rem'
-						}}
-					>
-						<label htmlFor={`V:${id}`}>{video.name}</label>
-						<input
-							id={`V:${id}`}
-							type="checkbox"
-							defaultChecked={videoIds.includes(id)}
-							onChange={event =>
-								dispatch(
-									event.target.checked
-										? { type: 'ENABLE_VIDEO', id }
-										: { type: 'DISABLE_VIDEO', id }
+										? { type: 'ENABLE_CLIP', id }
+										: { type: 'DISABLE_CLIP', id }
 								)
 							}
 						/>

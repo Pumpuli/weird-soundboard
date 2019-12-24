@@ -1,74 +1,51 @@
 import React, { useReducer, useRef } from 'react';
 import produce from 'immer';
-import { Sound, SoundState, Video, VideoState } from './interfaces';
+import { Clip, ClipState } from './interfaces';
 import useEventListener from './useEventListener';
-import SoundButton from './SoundButton';
-import Clip from './Clip';
-import VideoClip from './VideoClip';
-import ClipControl from './ClipControl';
+import BoardClip from './BoardClip';
 
 interface State {
-	soundStates: { [id: string]: SoundState };
-	videoStates: { [id: string]: VideoState };
+	clipStates: { [id: string]: ClipState };
 }
 
-type Action =
-	| { type: 'PLAY'; id: string }
-	| { type: 'STOP'; id: string }
-	| { type: 'PLAYVIDEO'; id: string }
-	| { type: 'STOPVIDEO'; id: string };
+type Action = { type: 'PLAY'; id: string } | { type: 'STOP'; id: string };
 
 const reducer: (state: State, action: Action) => State = produce(
 	(state: State, action: Action) => {
 		switch (action.type) {
 			case 'PLAY':
-				state.soundStates[action.id] = 'playing';
+				state.clipStates[action.id] = 'playing';
 				break;
 
 			case 'STOP':
-				state.soundStates[action.id] = 'idle';
-				break;
-
-			case 'PLAYVIDEO':
-				state.videoStates[action.id] = 'playing';
-				break;
-
-			case 'STOPVIDEO':
-				state.videoStates[action.id] = 'idle';
+				state.clipStates[action.id] = 'idle';
 				break;
 		}
 	}
 );
 
 const Board: React.FC<{
-	sounds: { [id: string]: Sound };
-	soundIds: string[];
+	clips: { [id: string]: Clip };
+	clipIds: string[];
 	keys: { [key: string]: string };
-	videos?: { [id: string]: Video };
-	videoIds?: string[];
-}> = ({ sounds, soundIds, keys, videos = {}, videoIds = [] }) => {
-	const [{ soundStates, videoStates }, dispatch] = useReducer(reducer, {
-		soundStates: {},
-		videoStates: {}
+}> = ({ clips, clipIds, keys = {} }) => {
+	const [{ clipStates }, dispatch] = useReducer(reducer, {
+		clipStates: {}
 	});
 
 	const refs = useRef(new Map<string, any>()).current;
-	const players = useRef(new Map<string, any>()).current;
 
 	function activate(id: string) {
-		const sound = sounds[id];
+		const clip = clips[id];
 
-		if (!sound) {
+		if (!clip) {
 			return;
 		}
 
-		if (sound.type === 'faf') {
-			const clip = refs.get(id);
-
-			clip && clip.play();
+		if (clip.type === 'soundfile' && clip.replayType === 'faf') {
+			refs.get(id)?.play();
 		} else {
-			const state = soundStates[id] || 'idle';
-
+			const state = clipStates[id] || 'idle';
 			dispatch(state === 'idle' ? { type: 'PLAY', id } : { type: 'STOP', id });
 		}
 	}
@@ -91,62 +68,20 @@ const Board: React.FC<{
 
 	return (
 		<main className="Sounds">
-			{soundIds.map(id => {
-				const sound = sounds[id];
-				const state = soundStates[id] || 'idle';
+			{clipIds.map(id => {
+				const clip = clips[id];
+				const state = clipStates[id] || 'idle';
 
 				return (
-					<React.Fragment key={id}>
-						<SoundButton
-							sound={sound}
-							state={state}
-							onClick={() => activate(id)}
-						/>
-						<Clip
-							ref={inst =>
-								inst === null ? refs.delete(id) : refs.set(id, inst)
-							}
-							url={sound.url}
-							state={state}
-							onEnd={() => dispatch({ type: 'STOP', id })}
-						/>
-					</React.Fragment>
-				);
-			})}
-			{videoIds.map(id => {
-				const video = videos[id];
-				const state = videoStates[id] || 'idle';
-
-				return (
-					<div key={id}>
-						<button
-							className="Sound"
-							type="button"
-							onClick={() =>
-								dispatch(
-									state === 'idle'
-										? { type: 'PLAYVIDEO', id }
-										: { type: 'STOPVIDEO', id }
-								)
-							}
-						>
-							{video.name}
-							<ClipControl state={state} />
-						</button>
-						<button
-							type="button"
-							onClick={() => players.get(id) && players.get(id).reset()}
-						>
-							reset
-						</button>
-						<VideoClip
-							ref={inst =>
-								inst === null ? players.delete(id) : players.set(id, inst)
-							}
-							video={video}
-							state={state}
-						/>
-					</div>
+					<BoardClip
+						key={id}
+						ref={inst => (inst === null ? refs.delete(id) : refs.set(id, inst))}
+						clip={clip}
+						state={state}
+						onClick={() => activate(id)}
+						onSecondaryClick={() => refs.get(id)?.reset?.()}
+						onEnd={() => dispatch({ type: 'STOP', id })}
+					/>
 				);
 			})}
 		</main>

@@ -14,7 +14,7 @@ interface Props {
 	onEnd?: () => void;
 }
 
-const Clip: React.FC<Props> = ({ url, state, onEnd }, ref) => {
+const AudioPlayer: React.FC<Props> = ({ url, state, onEnd }, ref) => {
 	const board = useContext(SoundContext);
 	const piece = useRef<SoundClip | null>(null);
 
@@ -56,4 +56,4 @@ const Clip: React.FC<Props> = ({ url, state, onEnd }, ref) => {
 	return null;
 };
 
-export default forwardRef(Clip);
+export default forwardRef(AudioPlayer);

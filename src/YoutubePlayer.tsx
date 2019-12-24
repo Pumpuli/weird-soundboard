@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import { Video, VideoState } from './interfaces';
+import { ClipState, YoutubeClip } from './interfaces';
 import YouTube from 'react-youtube';
 
 interface Props {
-	video: Video;
-	state: VideoState;
+	clip: YoutubeClip;
+	state: ClipState;
+	onEnd: () => void;
 }
 
 interface Methods {
 	reset(): void;
 }
 
-const VideoClip: React.RefForwardingComponent<Methods, Props> = ({ video, state }, ref) => {
+const YoutubePlayer: React.RefForwardingComponent<Methods, Props> = ({ clip, state, onEnd }, ref) => {
 	const player = useRef<any>(null);
 
 	useEffect(() => {
@@ -28,24 +29,25 @@ const VideoClip: React.RefForwardingComponent<Methods, Props> = ({ video, state 
 
 	useImperativeHandle(ref, () => ({
 		reset() {
-			player.current && player.current.seekTo(video.start || 0);
+			player.current && player.current.seekTo(clip.start || 0);
 		}
 	}));
 
 	return (
 		<div className="youtube-player">
 			<YouTube
-				videoId={video.videoId}
+				videoId={clip.videoId}
 				opts={{
 					playerVars: {
 						modestbranding: 1,
-						start: video.start || 0
+						start: clip.start || 0
 					}
 				}}
 				onReady={event => (player.current = event.target)}
+				onEnd={onEnd}
 			/>
 		</div>
 	);
 };
 
-export default forwardRef(VideoClip);
+export default forwardRef(YoutubePlayer);
