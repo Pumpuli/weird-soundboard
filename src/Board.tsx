@@ -4,7 +4,6 @@ import { Sound, SoundState, Video, VideoState } from './interfaces';
 import useEventListener from './useEventListener';
 import SoundButton from './SoundButton';
 import Clip from './Clip';
-import YouTube from 'react-youtube';
 import VideoClip from './VideoClip';
 import ClipControl from './ClipControl';
 

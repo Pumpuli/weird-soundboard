@@ -7,7 +7,11 @@ interface Props {
 	state: VideoState;
 }
 
-const VideoClip: React.FC<Props> = ({ video, state }, ref) => {
+interface Methods {
+	reset(): void;
+}
+
+const VideoClip: React.RefForwardingComponent<Methods, Props> = ({ video, state }, ref) => {
 	const player = useRef<any>(null);
 
 	useEffect(() => {
