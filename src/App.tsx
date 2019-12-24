@@ -4,6 +4,7 @@ import { Clip } from './interfaces';
 import Board from './Board';
 import './App.css';
 import ClipToggler from './ClipToggler';
+import Modal from 'react-modal';
 
 interface State {
 	clips: {
@@ -149,14 +150,17 @@ const App: React.FC = () => {
 			<button type="button" onClick={() => setTogglerOpen(v => !v)}>
 				conf
 			</button>
-			{isTogglerOpen ? (
+			<Modal
+				isOpen={isTogglerOpen}
+				onRequestClose={() => setTogglerOpen(false)}
+			>
 				<ClipToggler
 					clips={clips}
 					clipIds={clipIds}
 					dispatch={dispatch}
 					onRequestClose={() => setTogglerOpen(false)}
 				/>
-			) : null}
+			</Modal>
 		</div>
 	);
 };
