@@ -17,7 +17,10 @@ export interface Methods {
 	reset(): void;
 }
 
-const BoardClip: React.RefForwardingComponent<Methods, Props> = ({ clip, state, onClick, onSecondaryClick, onEnd }, ref) => {
+const BoardClip: React.ForwardRefRenderFunction<Methods, Props> = (
+	{ clip, state, onClick, onSecondaryClick, onEnd },
+	ref
+) => {
 	switch (clip.type) {
 		case 'soundfile':
 			return (
@@ -31,7 +34,9 @@ const BoardClip: React.RefForwardingComponent<Methods, Props> = ({ clip, state, 
 			return (
 				<>
 					<SoundButton sound={clip} state={state} onClick={onClick} />
-					<button type="button" onClick={onSecondaryClick}>reset</button>
+					<button type="button" onClick={onSecondaryClick}>
+						reset
+					</button>
 					<YoutubePlayer ref={ref} clip={clip} state={state} onEnd={onEnd} />
 				</>
 			);

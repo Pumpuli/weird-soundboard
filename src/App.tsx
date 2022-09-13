@@ -101,6 +101,20 @@ const App: React.FC = () => {
 					url: [`${process.env.PUBLIC_URL}/sounds/quack.mp3`],
 					replayType: 'faf'
 				},
+				s5: {
+					id: 's5',
+					channel: 'ch1',
+					name: 'Horse',
+					type: 'soundfile',
+					url: [`${process.env.PUBLIC_URL}/sounds/animal_horse.ogg`]
+				},
+				s6: {
+					id: 's6',
+					channel: 'ch1',
+					name: 'Bear',
+					type: 'soundfile',
+					url: [`${process.env.PUBLIC_URL}/sounds/animal_bear.ogg`]
+				},
 				v1: {
 					id: 'v1',
 					channel: 'ch1',
@@ -123,15 +137,27 @@ const App: React.FC = () => {
 					name: 'Rick Astley',
 					type: 'youtube',
 					videoId: 'dQw4w9WgXcQ'
+				},
+				v4: {
+					id: 'v4',
+					channel: 'ch1',
+					name: 'In the Beginning',
+					type: 'youtube',
+					videoId: '0ePKY2hC4lQ'
 				}
 			},
-			clipIds: ['s1', 's2', 's3', 's4', 'v1', 'v2', 'v3'],
+			clipIds: ['s1', 's2', 's3', 's4', 's5', 's6', 'v1', 'v2', 'v3', 'v4'],
 			keys: {
 				q: 's1',
 				w: 's2',
 				e: 's3',
 				r: 's4',
-				t: 'v1'
+				t: 's5',
+				y: 's6',
+				a: 'v1',
+				s: 'v2',
+				d: 'v3',
+				f: 'v4'
 			}
 		},
 		init

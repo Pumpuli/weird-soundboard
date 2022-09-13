@@ -3,7 +3,7 @@ import React, {
 	useEffect,
 	useRef,
 	useImperativeHandle,
-	forwardRef
+	forwardRef,
 } from 'react';
 import { SoundContext } from './SoundContext';
 import { SoundClip } from './soundboard';
@@ -14,7 +14,14 @@ interface Props {
 	onEnd?: () => void;
 }
 
-const AudioPlayer: React.FC<Props> = ({ url, state, onEnd }, ref) => {
+interface Methods {
+	play(): void;
+}
+
+const AudioPlayer: React.ForwardRefRenderFunction<Methods, Props> = (
+	{ url, state, onEnd },
+	ref
+) => {
 	const board = useContext(SoundContext);
 	const piece = useRef<SoundClip | null>(null);
 
@@ -50,7 +57,7 @@ const AudioPlayer: React.FC<Props> = ({ url, state, onEnd }, ref) => {
 	useImperativeHandle(ref, () => ({
 		play() {
 			piece.current && piece.current.play();
-		}
+		},
 	}));
 
 	return null;

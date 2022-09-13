@@ -12,7 +12,7 @@ interface Methods {
 	reset(): void;
 }
 
-const YoutubePlayer: React.RefForwardingComponent<Methods, Props> = ({ clip, state, onEnd }, ref) => {
+const YoutubePlayer: React.ForwardRefRenderFunction<Methods, Props> = ({ clip, state, onEnd }, ref) => {
 	const player = useRef<any>(null);
 
 	useEffect(() => {
